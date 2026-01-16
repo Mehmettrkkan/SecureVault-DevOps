@@ -1,0 +1,16 @@
+# Gereksiz sistem dosyaları
+.DS_Store
+Thumbs.db
+
+# IDE Ayarları
+.idea/
+.vscode/
+*.iml
+
+
+build/
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Docker
+.docker/
