@@ -1,0 +1,41 @@
+name: SecureVault CI Pipeline
+
+# Bu pipeline ne zaman çalışsın?
+# master dalına her push yapıldığında veya pull request geldiğinde.
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest # GitHub'ın sağladığı sanal Ubuntu makinesi
+
+    steps:
+    # 1. Adım: Kodları sanal makineye çek
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    # 2. Adım: Java 17 ortamını kur
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    # 3. Adım: Gradle'a çalışma izni ver 
+    - name: Grant execute permission for gradlew
+      run: chmod +x backend/secure-api/gradlew
+
+    # 4. Adım: Kodu derle ve Testleri çalıştır
+    - name: Build with Gradle
+      run: |
+        cd backend/secure-api
+        ./gradlew clean build
+
+    # 5. Adım: Docker imajı oluşturulabiliyor mu test et
+    - name: Build Docker Image
+      run: |
+        cd backend/secure-api
+        docker build -t securevault-backend:${{ github.sha }} .
