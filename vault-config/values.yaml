@@ -1,0 +1,25 @@
+# HashiCorp Vault Helm Chart Overrides
+# Bu konfigürasyon, Kubernetes üzerine Production-Ready bir Vault kurar.
+
+global:
+  enabled: true
+  tlsDisable: true # Lab ortamı olduğu için TLS kapalı (Prod'da açık olmalı)
+
+server:
+  # Verilerin kalıcı olması için Persistent Volume kullanıyoruz
+  dataStorage:
+    enabled: true
+    size: 10Gi
+  
+  # Standalone mod (Lab için basit kurulum)
+  ha:
+    enabled: false
+
+#  Injector
+# Bu özellik sayesinde Pod'lar başladığında Vault yanlarına bir "Sidecar" konteyner ekler
+# ve şifreleri güvenli bir şekilde pod'un içine bırakır.
+injector:
+  enabled: true
+  agentImage:
+    repository: "hashicorp/vault-k8s"
+    tag: "1.2.1"
